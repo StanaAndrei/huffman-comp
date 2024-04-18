@@ -28,12 +28,13 @@ int main(int argc, char *argv[]) {
 
     std::string buffer(fileSize, '\0');
     fin.read(&buffer[0], fileSize);
-    //cerr << buffer << endl;
+    buffer.pop_back();//del \n
+    cerr << buffer << endl;
 
     if (!strcmp(argv[1], "--decode")) {
         
     } else if (!strcmp(argv[1], "--encode")) {
-        
+        Huffman::encode(buffer);
     }//*/
     return 0;
 }

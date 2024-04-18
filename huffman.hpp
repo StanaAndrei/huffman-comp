@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <vector>
+#include <unordered_map>
 #include <utility>
 
 using PairChInt = std::pair<char, int>;
@@ -11,5 +11,5 @@ public:
     static std::string encode(const std::string&);
     static std::string decode(const std::string&);
 private:
-    static std::vector<PairChInt> getFreqVec(const std::string&);
+    static std::unordered_map<char, int> getFreq(const std::string&);
 };
