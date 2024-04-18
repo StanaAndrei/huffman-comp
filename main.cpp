@@ -4,6 +4,7 @@
 #include <string>
 
 #include "huffman.hpp"
+#include "bitarr.hpp"
 
 using std::cerr;
 using std::endl;
@@ -29,12 +30,13 @@ int main(int argc, char *argv[]) {
     std::string buffer(fileSize, '\0');
     fin.read(&buffer[0], fileSize);
     buffer.pop_back();//del \n
-    cerr << buffer << endl;
+    //cerr << buffer << endl;
 
     if (!strcmp(argv[1], "--decode")) {
         
     } else if (!strcmp(argv[1], "--encode")) {
-        Huffman::encode(buffer);
+        auto ans = Huffman::encode(buffer);
+        cerr << ans.first.toString() << endl;
     }//*/
     return 0;
 }
