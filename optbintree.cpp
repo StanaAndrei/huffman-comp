@@ -30,7 +30,7 @@ BitArr OptBinTree::getReprOf(char ch) {
     return this->umap[ch];
 }
 
-BitArr OptBinTree::serialize() {
+BitArr OptBinTree::serialize() const {
     BitArr bitArr;
     std::stack<OptBinTreeNode*> st;
     st.push(this->root);
@@ -80,4 +80,10 @@ void OptBinTree::deserialize(const BitArr &bitArr) {
     }
     size_t index = 0;
     root = deserializeHelper(bitArr, index);
+}
+
+std::ostream& operator << (std::ostream &out, const OptBinTree &optBinTree) {
+    BitArr bitArr = optBinTree.serialize();
+    out << bitArr;
+    return out;
 }

@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
             cerr << "error" << endl;
             return 1;
         }
-        fout << ans.first.serialize() << ans.second;
+        fout << ans.first << ans.second;
     }//*/
     return 0;
 }

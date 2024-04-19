@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <unordered_map>
+#include <iostream>
 
 #include "bitarr.hpp"
 
@@ -20,8 +21,9 @@ class OptBinTree {
 public:
     void setRoot(OptBinTreeNode*);
     BitArr getReprOf(char);
-    BitArr serialize();
+    BitArr serialize() const;
     void deserialize(const BitArr&);
+    friend std::ostream& operator << (std::ostream&, const OptBinTree&);
 private:
     OptBinTreeNode *root = nullptr;
     std::unordered_map<char, BitArr> umap;
