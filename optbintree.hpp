@@ -5,14 +5,15 @@
 #include <iostream>
 
 #include "bitarr.hpp"
+#include "defs.hpp"
 
-using PairChInt = std::pair<char, int>;
-constexpr char SPEC_CHAR = 0;
+using PairByteInt = std::pair<BYTE, int>;
+constexpr BYTE SPEC_BYTE = 0;
 
 struct OptBinTreeNode {
-    PairChInt data;
+    PairByteInt data;
     OptBinTreeNode *left, *right;
-    OptBinTreeNode(PairChInt data);
+    OptBinTreeNode(PairByteInt data);
     OptBinTreeNode(OptBinTreeNode *left, OptBinTreeNode *right);
     bool isLeaf() const;
 };
@@ -20,13 +21,13 @@ struct OptBinTreeNode {
 class OptBinTree {
 public:
     void setRoot(OptBinTreeNode*);
-    BitArr getReprOf(char);
+    BitArr getReprOf(BYTE);
     BitArr serialize() const;
     void deserialize(const BitArr&);
     friend std::ostream& operator << (std::ostream&, const OptBinTree&);
 private:
     OptBinTreeNode *root = nullptr;
-    std::unordered_map<char, BitArr> umap;
+    std::unordered_map<BYTE, BitArr> umap;
     void genUMap(OptBinTreeNode*, BitArr);
     OptBinTreeNode *deserializeHelper(const BitArr&, size_t &index);
 };

@@ -5,6 +5,9 @@
 #include <string>
 #include <iostream>
 
+#include "defs.hpp"
+
+
 constexpr int BITS_IN_BYTE = 8;
 constexpr int CHUNK_SIZE = 32;
 

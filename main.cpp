@@ -2,9 +2,13 @@
 #include <cstring>
 #include <fstream>
 #include <string>
+#include <vector>
+#include <iterator>
+
 
 #include "huffman.hpp"
 #include "bitarr.hpp"
+#include "defs.hpp"
 
 using std::cerr;
 using std::endl;
@@ -23,14 +27,8 @@ int main(int argc, char *argv[]) {
         cerr << f.what() << endl;
         return 1;
     }
-    fin.seekg(0, std::ios::end);
-    size_t fileSize = fin.tellg();
-    fin.seekg(0, std::ios::beg);
-
-    std::string buffer(fileSize, '\0');
-    fin.read(&buffer[0], fileSize);
-    //buffer.pop_back();//del \n
-    //cerr << buffer << endl;
+    
+    std::vector<BYTE> buffer(std::istreambuf_iterator<char>(fin), {});
 
     if (!strcmp(argv[1], "--decode")) {
         

@@ -5,15 +5,16 @@
 
 #include "optbintree.hpp"
 #include "bitarr.hpp"
+#include "defs.hpp"
 
-using PairChInt = std::pair<char, int>;
+using PairByteInt = std::pair<BYTE, int>;
 
 class Huffman {
 public:
     Huffman() = delete;
-    static std::pair<OptBinTree, BitArr> encode(const std::string&);
+    static std::pair<OptBinTree, BitArr> encode(const std::vector<BYTE>&);
     static std::string decode(const std::string&);
 private:
-    static std::unordered_map<char, int> getFreq(const std::string&);
-    static void makeOptBinTree(const std::unordered_map<char, int>&, OptBinTree&);
+    static std::unordered_map<BYTE, int> getFreq(const std::vector<BYTE>&);
+    static void makeOptBinTree(const std::unordered_map<BYTE, int>&, OptBinTree&);
 };

@@ -2,9 +2,9 @@
 
 #include <stack>
 
-OptBinTreeNode::OptBinTreeNode(PairChInt data): data(data), left(nullptr), right(nullptr) {}
+OptBinTreeNode::OptBinTreeNode(PairByteInt data): data(data), left(nullptr), right(nullptr) {}
 OptBinTreeNode::OptBinTreeNode(OptBinTreeNode *left, OptBinTreeNode *right): left(left), right(right) {
-    data = PairChInt(SPEC_CHAR, left->data.second + right->data.second);
+    data = PairByteInt(SPEC_BYTE, left->data.second + right->data.second);
 }
 
 void OptBinTree::genUMap(OptBinTreeNode *node, BitArr bitArr) {
@@ -26,7 +26,7 @@ bool OptBinTreeNode::isLeaf() const {
     return !this->left && !this->right;
 }
 
-BitArr OptBinTree::getReprOf(char ch) {
+BitArr OptBinTree::getReprOf(BYTE ch) {
     return this->umap[ch];
 }
 
@@ -39,11 +39,11 @@ BitArr OptBinTree::serialize() const {
         st.pop();
         if (curr->isLeaf()) {
             bitArr += 1;
-            BitArr charBitArr;
+            BitArr byteBitArr;
             for (int i = 0; i < BITS_IN_BYTE; i++) {
-                charBitArr += (curr->data.first >> i) & 1;
+                byteBitArr += (curr->data.first >> i) & 1;
             }
-            bitArr += charBitArr;
+            bitArr += byteBitArr;
         } else {
             bitArr += 0;
             if (curr->left) {
@@ -63,7 +63,7 @@ OptBinTreeNode *OptBinTree::deserializeHelper(const BitArr &bitArr, size_t &inde
     }
     bool isLeaf = bitArr[index++];
     if (isLeaf) {
-        char ch = 0;
+        BYTE ch = 0;
         for (int i = 0; i < BITS_IN_BYTE; i++) {
             ch |= (bitArr[index++] << i);
         }

@@ -5,26 +5,26 @@
 #include <unordered_map>
 #include <set>
 
-std::unordered_map<char, int> Huffman::getFreq(const std::string &str) {
-    std::unordered_map<char, int> freq;
-    for (char ch : str) {
+std::unordered_map<BYTE, int> Huffman::getFreq(const std::vector<BYTE> &buffer) {
+    std::unordered_map<BYTE, int> freq;
+    for (auto ch : buffer) {
         freq[ch]++;
     }
     return freq;
 }
 
-std::pair<OptBinTree, BitArr> Huffman::encode(const std::string &str) {
-    auto freq = getFreq(str);
+std::pair<OptBinTree, BitArr> Huffman::encode(const std::vector<BYTE> &buffer) {
+    auto freq = getFreq(buffer);
     OptBinTree tree;
     Huffman::makeOptBinTree(freq, tree);
     BitArr bitArr;
-    for (char ch : str) {
+    for (auto ch : buffer) {
         bitArr += tree.getReprOf(ch);
     }
     return std::make_pair(tree, bitArr);
 }
 
-void Huffman::makeOptBinTree(const std::unordered_map<char, int> &freq, OptBinTree &tree) {
+void Huffman::makeOptBinTree(const std::unordered_map<BYTE, int> &freq, OptBinTree &tree) {
     auto cmpF = [](const OptBinTreeNode *a, const OptBinTreeNode *b)->bool {
         return a->data.second <= b->data.second;
     };
