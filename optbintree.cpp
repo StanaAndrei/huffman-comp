@@ -78,6 +78,6 @@ void OptBinTree::deserialize(const BitArr &bitArr) {
     if (bitArr.getLen() == 0) {
         throw new std::invalid_argument("");
     }
-    size_t index;
+    size_t index = 0;
     root = deserializeHelper(bitArr, index);
 }
