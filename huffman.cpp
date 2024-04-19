@@ -13,15 +13,15 @@ std::unordered_map<char, int> Huffman::getFreq(const std::string &str) {
     return freq;
 }
 
-std::pair<BitArr, OptBinTree> Huffman::encode(const std::string &str) {
+std::pair<OptBinTree, BitArr> Huffman::encode(const std::string &str) {
     auto freq = getFreq(str);
     OptBinTree tree;
     Huffman::makeOptBinTree(freq, tree);
-    BitArr binArr;
+    BitArr bitArr;
     for (char ch : str) {
-        binArr += tree.getReprOf(ch);
+        bitArr += tree.getReprOf(ch);
     }
-    return std::make_pair(binArr, tree);
+    return std::make_pair(tree, bitArr);
 }
 
 void Huffman::makeOptBinTree(const std::unordered_map<char, int> &freq, OptBinTree &tree) {

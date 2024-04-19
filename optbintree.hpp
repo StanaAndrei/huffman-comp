@@ -6,7 +6,7 @@
 #include "bitarr.hpp"
 
 using PairChInt = std::pair<char, int>;
-constexpr char SPEC_CHAR = -1;
+constexpr char SPEC_CHAR = 0;
 
 struct OptBinTreeNode {
     PairChInt data;
@@ -20,8 +20,11 @@ class OptBinTree {
 public:
     void setRoot(OptBinTreeNode*);
     BitArr getReprOf(char);
+    BitArr serialize();
+    void deserialize(const BitArr&);
 private:
     OptBinTreeNode *root = nullptr;
     std::unordered_map<char, BitArr> umap;
     void genUMap(OptBinTreeNode*, BitArr);
+    OptBinTreeNode *deserializeHelper(const BitArr&, size_t &index);
 };

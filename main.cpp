@@ -29,14 +29,20 @@ int main(int argc, char *argv[]) {
 
     std::string buffer(fileSize, '\0');
     fin.read(&buffer[0], fileSize);
-    buffer.pop_back();//del \n
+    //buffer.pop_back();//del \n
     //cerr << buffer << endl;
 
     if (!strcmp(argv[1], "--decode")) {
         
     } else if (!strcmp(argv[1], "--encode")) {
         auto ans = Huffman::encode(buffer);
-        cerr << ans.first.toString() << endl;
+        //cerr << ans.first.toString() << endl;
+        std::ofstream fout(std::string(argv[2]) + ".hc", std::ios::binary);
+        if (!fout) {
+            cerr << "error" << endl;
+            return 1;
+        }
+        fout << ans.first.serialize() << ans.second;
     }//*/
     return 0;
 }

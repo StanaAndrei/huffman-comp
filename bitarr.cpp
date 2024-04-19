@@ -1,6 +1,7 @@
 #include "bitarr.hpp"
 
 #include <cassert>
+#include <math.h>
 
 void BitArr::setBit(size_t index, bool value) {
     assert(index < BITS_IN_BYTE * this->buffer.size());
@@ -26,7 +27,7 @@ bool BitArr::operator [] (size_t index) const {
     return (this->buffer[byteId] >> bitId) & 1;
 }
 
-inline size_t BitArr::getLen() const {
+size_t BitArr::getLen() const {
     return this->len;
 }
 
@@ -48,4 +49,10 @@ void BitArr::operator += (const BitArr &other) {
     for (size_t i = 0; i < other.getLen(); i++) {
         (*this) += (other[i]);
     }
+}
+
+std::ostream& operator << (std::ostream &out, const BitArr &bitArr) {
+    out.write(reinterpret_cast<const char*>(&bitArr.len), sizeof(bitArr.len));
+    out.write(reinterpret_cast<const char*>(&bitArr.buffer[0]), ceil(bitArr.len/BITS_IN_BYTE) * sizeof(bitArr.buffer[0]));
+    return out;
 }
