@@ -45,3 +45,13 @@ void Huffman::makeOptBinTree(const std::unordered_map<BYTE, int> &freq, OptBinTr
     }
     tree.setRoot(*set.begin());//*/
 }
+
+std::vector<BYTE> Huffman::decode(const std::pair<OptBinTree, BitArr> &pair) {
+    std::vector<BYTE> ans;
+    size_t index = 0;
+    while (index < pair.second.getLen()) {
+        BYTE byte = pair.first.iterate(pair.second, index);
+        ans.push_back(byte);
+    }
+    return ans;
+}

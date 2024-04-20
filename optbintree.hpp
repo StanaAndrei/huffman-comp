@@ -25,9 +25,11 @@ public:
     BitArr serialize() const;
     void deserialize(const BitArr&);
     friend std::ostream& operator << (std::ostream&, const OptBinTree&);
+    BYTE iterate(const BitArr&, size_t&) const;
 private:
     OptBinTreeNode *root = nullptr;
     std::unordered_map<BYTE, BitArr> umap;
     void genUMap(OptBinTreeNode*, BitArr);
     OptBinTreeNode *deserializeHelper(const BitArr&, size_t &index);
+    BYTE iterateUtil(const OptBinTreeNode *const, const BitArr&, size_t&) const;
 };

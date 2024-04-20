@@ -13,7 +13,7 @@ class Huffman {
 public:
     Huffman() = delete;
     static std::pair<OptBinTree, BitArr> encode(const std::vector<BYTE>&);
-    static std::string decode(const std::string&);
+    static std::vector<BYTE> decode(const std::pair<OptBinTree, BitArr>&);
 private:
     static std::unordered_map<BYTE, int> getFreq(const std::vector<BYTE>&);
     static void makeOptBinTree(const std::unordered_map<BYTE, int>&, OptBinTree&);

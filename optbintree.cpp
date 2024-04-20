@@ -87,3 +87,18 @@ std::ostream& operator << (std::ostream &out, const OptBinTree &optBinTree) {
     out << bitArr;
     return out;
 }
+
+BYTE OptBinTree::iterateUtil(const OptBinTreeNode *const node, const BitArr &bitArr, size_t &index) const {
+    if (node->isLeaf()) {
+        return node->data.first;
+    }
+    if (bitArr[index++]) {
+        return iterateUtil(node->right, bitArr, index);
+    } else {
+        return iterateUtil(node->left, bitArr, index);
+    }
+}
+
+BYTE OptBinTree::iterate(const BitArr &bitArr, size_t &index) const {
+    return iterateUtil(this->root, bitArr, index);
+}

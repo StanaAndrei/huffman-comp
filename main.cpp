@@ -28,13 +28,12 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     
-    std::vector<BYTE> buffer(std::istreambuf_iterator<char>(fin), {});
 
     if (!strcmp(argv[1], "--decode")) {
         
     } else if (!strcmp(argv[1], "--encode")) {
-        auto ans = Huffman::encode(buffer);
-        //cerr << ans.first.toString() << endl;
+        const std::vector<BYTE> buffer(std::istreambuf_iterator<char>(fin), {});
+        const auto ans = Huffman::encode(buffer);
         std::ofstream fout(std::string(argv[2]) + ".hc", std::ios::binary);
         if (!fout) {
             cerr << "error" << endl;
