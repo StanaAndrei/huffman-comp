@@ -44,7 +44,6 @@ int main(int argc, char *argv[]) {
         const auto ans = Huffman::encode(buffer);
         FileUtils::openFile(fout, (std::string(argv[2]) + FILE_SUF).c_str(), FileUtils::WRITE_BIN_OPEN);
         fout << ans.first << ans.second;
-        auto tmp = Huffman::decode(ans);
     }
     fin.close();
     fout.close();
