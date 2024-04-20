@@ -56,3 +56,13 @@ std::ostream& operator << (std::ostream &out, const BitArr &bitArr) {
     out.write(reinterpret_cast<const char*>(&bitArr.buffer[0]), ceil(bitArr.len/BITS_IN_BYTE) * sizeof(bitArr.buffer[0]));
     return out;
 }
+
+std::istream& operator >> (std::istream &in, BitArr &bitArr) {
+    size_t len;
+    in.read(reinterpret_cast<char*>(&len), sizeof(len));
+    size_t nrBytes = ceil(len / BITS_IN_BYTE);
+    bitArr.buffer.resize(nrBytes);
+    bitArr.len = len;
+    in.read(reinterpret_cast<char*>(&bitArr.buffer[0]), nrBytes);
+    return in;
+}

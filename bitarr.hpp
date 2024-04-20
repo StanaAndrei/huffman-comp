@@ -21,6 +21,7 @@ public:
     BitArr operator + (bool value) const;
     void operator += (const BitArr&);
     friend std::ostream& operator << (std::ostream&, const BitArr&);
+    friend std::istream& operator >> (std::istream&, BitArr&);
 private:
     std::vector<uint8_t> buffer;
     size_t len = 0;

@@ -102,3 +102,10 @@ BYTE OptBinTree::iterateUtil(const OptBinTreeNode *const node, const BitArr &bit
 BYTE OptBinTree::iterate(const BitArr &bitArr, size_t &index) const {
     return iterateUtil(this->root, bitArr, index);
 }
+
+std::istream& operator >> (std::istream &in, OptBinTree &optBinTree) {
+    BitArr bitArr;
+    in >> bitArr;
+    optBinTree.deserialize(bitArr);
+    return in;
+}
