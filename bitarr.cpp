@@ -31,7 +31,7 @@ size_t BitArr::getLen() const {
     return this->len;
 }
 
-std::string BitArr::toString() {
+std::string BitArr::toString() const {
     std::string ans;
     for (size_t i = 0; i < this->len; i++) {
         ans += static_cast<char>(((*this)[i]) + '0');
@@ -53,16 +53,34 @@ void BitArr::operator += (const BitArr &other) {
 
 std::ostream& operator << (std::ostream &out, const BitArr &bitArr) {
     out.write(reinterpret_cast<const char*>(&bitArr.len), sizeof(bitArr.len));
-    out.write(reinterpret_cast<const char*>(&bitArr.buffer[0]), ceil(bitArr.len/BITS_IN_BYTE) * sizeof(bitArr.buffer[0]));
+    out.write(reinterpret_cast<const char*>(&bitArr.buffer[0]), ceil(1. * bitArr.len/BITS_IN_BYTE));
     return out;
 }
 
 std::istream& operator >> (std::istream &in, BitArr &bitArr) {
     size_t len;
     in.read(reinterpret_cast<char*>(&len), sizeof(len));
-    size_t nrBytes = ceil(len / BITS_IN_BYTE);
+    size_t nrBytes = ceil(1. * len/BITS_IN_BYTE);
     bitArr.buffer.resize(nrBytes);
     bitArr.len = len;
     in.read(reinterpret_cast<char*>(&bitArr.buffer[0]), nrBytes);
     return in;
+}
+
+bool BitArr::operator == (const BitArr &other) const {
+    return this->buffer == other.buffer;
+}
+
+void BitArr::operator += (BYTE x) {
+    for (size_t i = 0; i < BITS_IN_BYTE; i++) {
+        (*this) += static_cast<bool>((x >> i) & 1);
+    }
+}
+
+BYTE BitArr::getByte(size_t index) const {
+    return this->buffer[index];
+}
+
+size_t BitArr::getNrBytes() const {
+    return this->buffer.size();
 }

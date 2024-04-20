@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
         std::pair<OptBinTree, BitArr> pair;
         fin >> pair.first >> pair.second;
         auto ans = Huffman::decode(pair);
-        fname.erase(fname.length() - 3);
+        fname.erase(fname.length() - strlen(FILE_SUF));
         FileUtils::openFile(fout, fname.c_str(), FileUtils::WRITE_BIN_OPEN);
         fout.write(reinterpret_cast<char*>(&ans[0]), ans.size());
     } else if (!strcmp(argv[1], "--encode")) {
@@ -44,7 +44,9 @@ int main(int argc, char *argv[]) {
         const auto ans = Huffman::encode(buffer);
         FileUtils::openFile(fout, (std::string(argv[2]) + FILE_SUF).c_str(), FileUtils::WRITE_BIN_OPEN);
         fout << ans.first << ans.second;
-    }//*/
+        ans.first.print();
+        auto tmp = Huffman::decode(ans);
+    }
     fin.close();
     fout.close();
     return 0;

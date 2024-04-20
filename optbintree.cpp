@@ -2,12 +2,22 @@
 
 #include <stack>
 
+constexpr int BYTE_SIZE = 8; // Size of a byte in bits
+constexpr int SIZE_T_SIZE = sizeof(size_t); // Size of a size_t type in bytes
+constexpr int INT_SIZE = sizeof(int);
+
+
 OptBinTreeNode::OptBinTreeNode(PairByteInt data): data(data), left(nullptr), right(nullptr) {}
 OptBinTreeNode::OptBinTreeNode(OptBinTreeNode *left, OptBinTreeNode *right): left(left), right(right) {
-    data = PairByteInt(SPEC_BYTE, left->data.second + right->data.second);
+    if (left != nullptr && right != nullptr) {
+        data = PairByteInt(SPEC_BYTE, left->data.second + right->data.second);
+    }
 }
 
 void OptBinTree::genUMap(OptBinTreeNode *node, BitArr bitArr) {
+    if (node == nullptr) {
+        return;
+    }
     if (node->isLeaf()) {
         this->umap[node->data.first] = bitArr;
         return;
@@ -28,58 +38,6 @@ bool OptBinTreeNode::isLeaf() const {
 
 BitArr OptBinTree::getReprOf(BYTE ch) {
     return this->umap[ch];
-}
-
-BitArr OptBinTree::serialize() const {
-    BitArr bitArr;
-    std::stack<OptBinTreeNode*> st;
-    st.push(this->root);
-    while (!st.empty()) {
-        OptBinTreeNode *curr = st.top();
-        st.pop();
-        if (curr->isLeaf()) {
-            bitArr += 1;
-            BitArr byteBitArr;
-            for (int i = 0; i < BITS_IN_BYTE; i++) {
-                byteBitArr += (curr->data.first >> i) & 1;
-            }
-            bitArr += byteBitArr;
-        } else {
-            bitArr += 0;
-            if (curr->left) {
-                st.push(curr->left);
-            }
-            if (curr->right) {
-                st.push(curr->right);
-            }
-        }
-    }
-    return bitArr;
-}
-
-OptBinTreeNode *OptBinTree::deserializeHelper(const BitArr &bitArr, size_t &index) {
-    if (index >= bitArr.getLen()) {
-        return nullptr;
-    }
-    bool isLeaf = bitArr[index++];
-    if (isLeaf) {
-        BYTE ch = 0;
-        for (int i = 0; i < BITS_IN_BYTE; i++) {
-            ch |= (bitArr[index++] << i);
-        }
-        return new OptBinTreeNode(std::make_pair(ch, 0));
-    }
-    const auto left = deserializeHelper(bitArr, index);
-    const auto right = deserializeHelper(bitArr, index);
-    return new OptBinTreeNode(left, right);
-}
-
-void OptBinTree::deserialize(const BitArr &bitArr) {
-    if (bitArr.getLen() == 0) {
-        throw new std::invalid_argument("");
-    }
-    size_t index = 0;
-    root = deserializeHelper(bitArr, index);
 }
 
 std::ostream& operator << (std::ostream &out, const OptBinTree &optBinTree) {
@@ -108,4 +66,63 @@ std::istream& operator >> (std::istream &in, OptBinTree &optBinTree) {
     in >> bitArr;
     optBinTree.deserialize(bitArr);
     return in;
+}
+
+using std::cout;
+void OptBinTree::print() const {
+    cout << "----------------------\n";
+    this->printOptBinTreeNode(this->root, 0);
+    cout << "----------------------\n";
+}
+
+void OptBinTree::printOptBinTreeNode(const OptBinTreeNode *const node, int depth) const {
+    if (node == nullptr)
+        return;
+
+    // Print the current node's data
+    for (int i = 0; i < depth; ++i)
+        std::cout << "  "; // Indent based on depth
+    if (node->isLeaf()) {
+        std::cout << "Leaf: " << static_cast<char>(node->data.first) << ", Frequency: " << node->data.second << std::endl;
+    } else {
+        std::cout << "Internal Node, Frequency: " << node->data.second << std::endl;
+    }
+
+    // Recursively print left and right subtrees
+    printOptBinTreeNode(node->left, depth + 1);
+    printOptBinTreeNode(node->right, depth + 1);
+}
+
+BitArr OptBinTree::serialize() const {
+    BitArr bitArr;
+    serializeHelper(this->root, bitArr);
+    return bitArr;
+}
+
+void OptBinTree::serializeHelper(const OptBinTreeNode *const node, BitArr &bitArr) const {
+    if (node == nullptr) {
+        bitArr += BYTE(MARKER);
+        return;
+    }
+    bitArr += node->data.first;
+    serializeHelper(node->left, bitArr);
+    serializeHelper(node->right, bitArr);
+}
+
+void OptBinTree::deserialize(const BitArr &bitArr) {
+    size_t byteId = 0;
+    this->deserializeHelper(bitArr, byteId, this->root);
+}
+
+void OptBinTree::deserializeHelper(const BitArr &bitArr, size_t &byteId, OptBinTreeNode*& node) {
+    if (byteId == bitArr.getNrBytes()) {
+        return;
+    }
+    BYTE val = bitArr.getByte(byteId++);
+    if (val == MARKER) {
+        return;
+    }
+    node = new OptBinTreeNode(std::make_pair(val, 0));
+    deserializeHelper(bitArr, byteId, node->left);
+    deserializeHelper(bitArr, byteId, node->right);
 }
