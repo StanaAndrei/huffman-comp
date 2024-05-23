@@ -6,6 +6,18 @@ constexpr int BYTE_SIZE = 8; // Size of a byte in bits
 constexpr int SIZE_T_SIZE = sizeof(size_t); // Size of a size_t type in bytes
 constexpr int INT_SIZE = sizeof(int);
 
+NodeType OptBinTreeNode::getNodeType() const {
+    const bool okLe = (this->left != nullptr), okRi = (this->right != nullptr);
+    if (okLe && okRi) {
+        return (NodeType::FULL);
+    } else if (okLe) {
+        return (NodeType::HALF_LEFT);
+    } else if (okRi) {
+        return (NodeType::HALF_RIGHT);
+    } else {
+        return (NodeType::LEAF);
+    }
+}
 
 OptBinTreeNode::OptBinTreeNode(PairByteInt data): data(data), left(nullptr), right(nullptr) {}
 OptBinTreeNode::OptBinTreeNode(OptBinTreeNode *left, OptBinTreeNode *right): left(left), right(right) {
@@ -100,13 +112,16 @@ BitArr OptBinTree::serialize() const {
 }
 
 void OptBinTree::serializeHelper(const OptBinTreeNode *const node, BitArr &bitArr) const {
-    if (node == nullptr) {
-        bitArr += BYTE(MARKER);
-        return;
+    const NodeType nodeType = node->getNodeType();
+    bitArr += BYTE(nodeType);
+    bitArr += BYTE(node->data.first);
+
+    if (nodeType == NodeType::FULL || nodeType == NodeType::HALF_LEFT) {
+        serializeHelper(node->left, bitArr);
     }
-    bitArr += node->data.first;
-    serializeHelper(node->left, bitArr);
-    serializeHelper(node->right, bitArr);
+    if (nodeType == NodeType::FULL || nodeType == NodeType::HALF_RIGHT) {
+        serializeHelper(node->right, bitArr);
+    }
 }
 
 void OptBinTree::deserialize(const BitArr &bitArr) {
@@ -118,11 +133,15 @@ void OptBinTree::deserializeHelper(const BitArr &bitArr, size_t &byteId, OptBinT
     if (byteId == bitArr.getNrBytes()) {
         return;
     }
+    NodeType nodeType = static_cast<NodeType>(bitArr.getByte(byteId++));
     BYTE val = bitArr.getByte(byteId++);
-    if (val == MARKER) {
-        return;
-    }
     node = new OptBinTreeNode(std::make_pair(val, 0));
-    deserializeHelper(bitArr, byteId, node->left);
-    deserializeHelper(bitArr, byteId, node->right);
+
+    if (nodeType == NodeType::FULL || nodeType == NodeType::HALF_LEFT) {
+        deserializeHelper(bitArr, byteId, node->left);
+    }
+    
+    if (nodeType == NodeType::FULL || nodeType == NodeType::HALF_RIGHT) {
+        deserializeHelper(bitArr, byteId, node->right);
+    }
 }

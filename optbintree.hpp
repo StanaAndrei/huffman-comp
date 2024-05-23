@@ -9,7 +9,10 @@
 
 using PairByteInt = std::pair<BYTE, int>;
 constexpr BYTE SPEC_BYTE = 0;
-constexpr BYTE MARKER = -1;
+
+enum class NodeType {
+    LEAF, HALF_LEFT, HALF_RIGHT, FULL
+};
 
 struct OptBinTreeNode {
     PairByteInt data;
@@ -17,6 +20,7 @@ struct OptBinTreeNode {
     OptBinTreeNode(PairByteInt data);
     OptBinTreeNode(OptBinTreeNode *left, OptBinTreeNode *right);
     bool isLeaf() const;
+    NodeType getNodeType() const;
 };
 
 class OptBinTree {

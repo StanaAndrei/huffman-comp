@@ -41,6 +41,10 @@ int main(int argc, char *argv[]) {
         fout.write(reinterpret_cast<char*>(&ans[0]), ans.size());
     } else if (!strcmp(argv[1], "--encode")) {
         const std::vector<BYTE> buffer(std::istreambuf_iterator<char>(fin), {});
+        if (buffer.size() < MIN_SZ) {
+            cerr << "It makes no sense to encode this(file too small)!" << endl;
+            return 0;
+        }
         const auto ans = Huffman::encode(buffer);
         FileUtils::openFile(fout, (std::string(argv[2]) + FILE_SUF).c_str(), FileUtils::WRITE_BIN_OPEN);
         fout << ans.first << ans.second;
